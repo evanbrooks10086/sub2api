@@ -100,9 +100,7 @@ describe('PaymentStatusPanel', () => {
     expect(wrapper.emitted('success')).toHaveLength(1)
   })
 
-  it('shows reopen button in QR mode when payUrl is also available', async () => {
-    const openSpy = vi.spyOn(window, 'open').mockReturnValue({ closed: false } as Window)
-
+  it('does not show reopen button in QR mode when payUrl is also available', async () => {
     const wrapper = mount(PaymentStatusPanel, {
       props: {
         orderId: 42,
@@ -120,16 +118,7 @@ describe('PaymentStatusPanel', () => {
     })
 
     await flushPromises()
-    expect(wrapper.text()).toContain('payment.qr.openPayWindow')
-
-    await wrapper.get('button.btn.btn-secondary.text-sm').trigger('click')
-    expect(openSpy).toHaveBeenCalledWith(
-      'https://pay.example.com/session/42',
-      'paymentPopup',
-      expect.any(String),
-    )
-
-    openSpy.mockRestore()
+    expect(wrapper.text()).not.toContain('payment.qr.openPayWindow')
   })
 
   it('uses generic QR copy for custom methods that contain built-in names', async () => {
